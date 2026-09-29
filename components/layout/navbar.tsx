@@ -34,12 +34,15 @@ const user: { name: string; email: string } | null = null
 export function Navbar() {
   const pathname = usePathname()
 
+  const loginVariant = pathname === '/login' ? 'default' : 'ghost'
+  const signupVariant = pathname === '/register' ? 'default' : 'ghost'
+
   return (
-    <header className="sticky top-0 z-50 w-full bg-background/95 bg-gray-100 backdrop-blur">
+    <header className="sticky top-0 z-50 w-full bg-gray-100 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-2 font-bold">
           <Briefcase className="h-5 w-5" />
-          JobPortal
+          Careerly
         </Link>
 
         {/* Desktop links */}
@@ -82,10 +85,10 @@ export function Navbar() {
             </DropdownMenu>
           ) : (
             <>
-              <Link href="/login" className={buttonVariants({ variant: 'ghost' })}>
+              <Link href="/login" className={buttonVariants({ variant: loginVariant })}>
                 Log in
               </Link>
-              <Link href="/register" className={buttonVariants()}>
+              <Link href="/register" className={buttonVariants({ variant: signupVariant })}>
                 Sign up
               </Link>
             </>
@@ -104,17 +107,34 @@ export function Navbar() {
             <SheetTitle className="sr-only">Menu</SheetTitle>
             <nav className="mt-10 flex flex-col gap-4 px-4">
               {links.map((link) => (
-                <Link key={link.href} href={link.href} className="text-lg font-medium">
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={cn(
+                    'text-lg font-medium',
+                    pathname === link.href && 'text-primary'
+                  )}
+                >
                   {link.label}
                 </Link>
               ))}
               <hr />
               {!user && (
                 <>
-                  <Link href="/login" className={buttonVariants({ variant: 'outline' })}>
+                  <Link
+                    href="/login"
+                    className={buttonVariants({
+                      variant: pathname === '/login' ? 'default' : 'outline',
+                    })}
+                  >
                     Log in
                   </Link>
-                  <Link href="/register" className={buttonVariants()}>
+                  <Link
+                    href="/register"
+                    className={buttonVariants({
+                      variant: pathname === '/register' ? 'default' : 'outline',
+                    })}
+                  >
                     Sign up
                   </Link>
                 </>
