@@ -1,0 +1,89 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  CANDIDATE
+  EMPLOYER
+  ADMIN
+}
+
+enum JobType {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+  INTERNSHIP
+  REMOTE
+}
+
+enum ApplicationStatus {
+  PENDING
+  REVIEWED
+  SHORTLISTED
+  REJECTED
+  HIRED
+}
+
+model User {
+  id           String        @id @default(cuid())
+  name         String
+  email        String        @unique
+  passwordHash String
+  role         Role          @default(CANDIDATE)
+  resumeUrl    String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  company      Company?
+  applications Application[]
+}
+
+model Company {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  website     String?
+  logoUrl     String?
+  location    String?
+  ownerId     String   @unique
+  owner       User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  jobs        Job[]
+  createdAt   DateTime @default(now())
+}
+
+model Job {
+  id           String        @id @default(cuid())
+  title        String
+  description  String
+  location     String
+  type         JobType
+  salaryMin    Int?
+  salaryMax    Int?
+  isActive     Boolean       @default(true)
+  companyId    String
+  company      Company       @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  applications Application[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@index([companyId])
+  @@index([title])
+}
+
+model Application {
+  id          String            @id @default(cuid())
+  coverLetter String?
+  status      ApplicationStatus @default(PENDING)
+  jobId       String
+  candidateId String
+  job         Job               @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  candidate   User              @relation(fields: [candidateId], references: [id], onDelete: Cascade)
+  createdAt   DateTime          @default(now())
+
+  @@unique([jobId, candidateId])
+}
