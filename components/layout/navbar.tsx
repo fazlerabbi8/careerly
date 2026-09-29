@@ -1,0 +1,128 @@
+'use client'
+
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { Briefcase, Menu } from 'lucide-react'
+import { buttonVariants } from '@/components/ui/button'
+import {
+  Sheet,
+  SheetContent,
+  SheetTitle,
+  SheetTrigger,
+} from '@/components/ui/sheet'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { cn } from '@/lib/utils'
+
+const links = [
+  { href: '/', label: 'Home' },
+  { href: '/jobs', label: 'Jobs' },
+  { href: '/companies', label: 'Companies' },
+]
+
+// Placeholder until authentication is built.
+const user: { name: string; email: string } | null = null
+
+export function Navbar() {
+  const pathname = usePathname()
+
+  return (
+    <header className="sticky top-0 z-50 w-full bg-background/95 bg-gray-100 backdrop-blur">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
+        <Link href="/" className="flex items-center gap-2 font-bold">
+          <Briefcase className="h-5 w-5" />
+          JobPortal
+        </Link>
+
+        {/* Desktop links */}
+        <nav className="hidden items-center gap-6 md:flex">
+          {links.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={cn(
+                'text-sm font-medium transition-colors hover:text-primary',
+                pathname === link.href ? 'text-primary' : 'text-muted-foreground'
+              )}
+            >
+              {link.label}
+            </Link>
+          ))}
+        </nav>
+
+        {/* Desktop auth area */}
+        <div className="hidden items-center gap-2 md:flex">
+          {user ? (
+            <DropdownMenu>
+              <DropdownMenuTrigger
+                className={cn(buttonVariants({ variant: 'ghost' }), 'rounded-full p-0')}
+              >
+                <Avatar>
+                  <AvatarFallback>{user.name[0]}</AvatarFallback>
+                </Avatar>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuGroup>
+                  <DropdownMenuLabel>{user.email}</DropdownMenuLabel>
+                </DropdownMenuGroup>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem render={<Link href="/dashboard" />}>
+                  Dashboard
+                </DropdownMenuItem>
+                <DropdownMenuItem>Log out</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          ) : (
+            <>
+              <Link href="/login" className={buttonVariants({ variant: 'ghost' })}>
+                Log in
+              </Link>
+              <Link href="/register" className={buttonVariants()}>
+                Sign up
+              </Link>
+            </>
+          )}
+        </div>
+
+        {/* Mobile menu */}
+        <Sheet>
+          <SheetTrigger
+            aria-label="Open menu"
+            className={cn(buttonVariants({ variant: 'ghost', size: 'icon' }), 'md:hidden')}
+          >
+            <Menu className="h-5 w-5" />
+          </SheetTrigger>
+          <SheetContent side="right">
+            <SheetTitle className="sr-only">Menu</SheetTitle>
+            <nav className="mt-10 flex flex-col gap-4 px-4">
+              {links.map((link) => (
+                <Link key={link.href} href={link.href} className="text-lg font-medium">
+                  {link.label}
+                </Link>
+              ))}
+              <hr />
+              {!user && (
+                <>
+                  <Link href="/login" className={buttonVariants({ variant: 'outline' })}>
+                    Log in
+                  </Link>
+                  <Link href="/register" className={buttonVariants()}>
+                    Sign up
+                  </Link>
+                </>
+              )}
+            </nav>
+          </SheetContent>
+        </Sheet>
+      </div>
+    </header>
+  )
+}
