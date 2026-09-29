@@ -1,15 +1,16 @@
-'use client'
+"use client";
 
-import Link from 'next/link'
-import { usePathname } from 'next/navigation'
-import { Briefcase, Menu } from 'lucide-react'
-import { buttonVariants } from '@/components/ui/button'
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Briefcase, Menu } from "lucide-react";
+import { buttonVariants } from "@/components/ui/button";
+import Image from "next/image";
 import {
   Sheet,
   SheetContent,
   SheetTitle,
   SheetTrigger,
-} from '@/components/ui/sheet'
+} from "@/components/ui/sheet";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,31 +19,37 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { cn } from '@/lib/utils'
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { cn } from "@/lib/utils";
 
 const links = [
-  { href: '/', label: 'Home' },
-  { href: '/jobs', label: 'Jobs' },
-  { href: '/companies', label: 'Companies' },
-]
+  { href: "/", label: "Home" },
+  { href: "/jobs", label: "Jobs" },
+  { href: "/companies", label: "Companies" },
+];
 
 // Placeholder until authentication is built.
-const user: { name: string; email: string } | null = null
+const user: { name: string; email: string } | null = null;
 
 export function Navbar() {
-  const pathname = usePathname()
+  const pathname = usePathname();
 
-  const loginVariant = pathname === '/login' ? 'default' : 'ghost'
-  const signupVariant = pathname === '/register' ? 'default' : 'ghost'
+  const loginVariant = pathname === "/login" ? "default" : "ghost";
+  const signupVariant = pathname === "/register" ? "default" : "ghost";
 
   return (
     <header className="sticky top-0 z-50 w-full bg-gray-100 backdrop-blur">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
         <Link href="/" className="flex items-center gap-2 font-bold">
-          <Briefcase className="h-5 w-5" />
-          Careerly
+          <Image
+            src="/logo.png"
+            alt="Careerly logo"
+            width={32}
+            height={32}
+            priority
+          />
+          <span>Careerly</span>
         </Link>
 
         {/* Desktop links */}
@@ -52,8 +59,10 @@ export function Navbar() {
               key={link.href}
               href={link.href}
               className={cn(
-                'text-sm font-medium transition-colors hover:text-primary',
-                pathname === link.href ? 'text-primary' : 'text-muted-foreground'
+                "text-sm font-medium transition-colors hover:text-primary",
+                pathname === link.href
+                  ? "text-primary"
+                  : "text-muted-foreground",
               )}
             >
               {link.label}
@@ -66,7 +75,10 @@ export function Navbar() {
           {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger
-                className={cn(buttonVariants({ variant: 'ghost' }), 'rounded-full p-0')}
+                className={cn(
+                  buttonVariants({ variant: "ghost" }),
+                  "rounded-full p-0",
+                )}
               >
                 <Avatar>
                   <AvatarFallback>{user.name[0]}</AvatarFallback>
@@ -85,10 +97,16 @@ export function Navbar() {
             </DropdownMenu>
           ) : (
             <>
-              <Link href="/login" className={buttonVariants({ variant: loginVariant })}>
+              <Link
+                href="/login"
+                className={buttonVariants({ variant: loginVariant })}
+              >
                 Log in
               </Link>
-              <Link href="/register" className={buttonVariants({ variant: signupVariant })}>
+              <Link
+                href="/register"
+                className={buttonVariants({ variant: signupVariant })}
+              >
                 Sign up
               </Link>
             </>
@@ -99,7 +117,10 @@ export function Navbar() {
         <Sheet>
           <SheetTrigger
             aria-label="Open menu"
-            className={cn(buttonVariants({ variant: 'ghost', size: 'icon' }), 'md:hidden')}
+            className={cn(
+              buttonVariants({ variant: "ghost", size: "icon" }),
+              "md:hidden",
+            )}
           >
             <Menu className="h-5 w-5" />
           </SheetTrigger>
@@ -111,8 +132,8 @@ export function Navbar() {
                   key={link.href}
                   href={link.href}
                   className={cn(
-                    'text-lg font-medium',
-                    pathname === link.href && 'text-primary'
+                    "text-lg font-medium",
+                    pathname === link.href && "text-primary",
                   )}
                 >
                   {link.label}
@@ -124,7 +145,7 @@ export function Navbar() {
                   <Link
                     href="/login"
                     className={buttonVariants({
-                      variant: pathname === '/login' ? 'default' : 'outline',
+                      variant: pathname === "/login" ? "default" : "outline",
                     })}
                   >
                     Log in
@@ -132,7 +153,7 @@ export function Navbar() {
                   <Link
                     href="/register"
                     className={buttonVariants({
-                      variant: pathname === '/register' ? 'default' : 'outline',
+                      variant: pathname === "/register" ? "default" : "outline",
                     })}
                   >
                     Sign up
@@ -144,5 +165,5 @@ export function Navbar() {
         </Sheet>
       </div>
     </header>
-  )
+  );
 }
