@@ -1,6 +1,7 @@
 'use client'
 
 import { Button } from '@/components/ui/button'
+import { signInWithProvider } from '@/lib/auth-api'
 
 function GoogleIcon() {
   return (
@@ -22,9 +23,10 @@ function GithubIcon() {
 }
 
 export function SocialButtons() {
-  function handleSocial(provider: 'google' | 'github') {
+  async function handleSocial(provider: 'google' | 'github') {
     // TODO: replace with signIn(provider) from Auth.js
-    console.log('Sign in with', provider)
+    await signInWithProvider(provider)
+    
   }
 
   return (

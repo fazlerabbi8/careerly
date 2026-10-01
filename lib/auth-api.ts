@@ -6,7 +6,7 @@ export async function signUp(input: {
     email: string
     password: string
     role: "CANDIDATE" | "EMPLOYER"
-}): Promise<Result> {
+}): Promise<result> {
     const {error} = await authClient.signUp.email(input)
     return {error: error ? 'Could not create your account.' : null}
 }
@@ -21,4 +21,10 @@ export async function signIn(input: {
 
 export async function signOut(): Promise<void> {
     await authClient.signOut()
+}
+
+// social login
+
+export async function signInWithProvider(provider: 'google' | 'github'){
+    await authClient.signIn.social({provider, callbackURL: '/'})
 }
