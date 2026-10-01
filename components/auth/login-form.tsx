@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Eye, EyeOff } from 'lucide-react'
+import { AwardIcon, Eye, EyeOff } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -16,18 +16,38 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { SocialButtons } from '@/components/auth/social-buttons'
+import { signIn } from '@/lib/auth-api'
+import { string } from 'better-auth'
+import { useRouter } from 'next/navigation'
 
 export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
+  const router = useRouter()
+const [error, setError] = useState<string | null>(null)
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault()
     setLoading(true)
     const data = new FormData(e.currentTarget)
     // TODO: replace with signIn('credentials', ...) from Auth.js
+
+    const {error: signInError} = await signIn({
+      email: String(data.get('email')),
+      password: String(data.get('password'))
+    })
+
+
     console.log({ email: data.get('email'), password: data.get('password') })
     setLoading(false)
+
+    if(signInError){
+      setError(signInError)
+      return
+    }
+
+    router.push('/')
+    router.refresh()
   }
 
   return (

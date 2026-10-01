@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
+import { authClient } from "@/lib/auth-clients";
 
 const links = [
   { href: "/", label: "Home" },
@@ -29,11 +30,11 @@ const links = [
   { href: "/companies", label: "Companies" },
 ];
 
-// Placeholder until authentication is built.
-const user: { name: string; email: string } | null = null;
 
 export function Navbar() {
   const pathname = usePathname();
+  const { data: session, isPending } = authClient.useSession();
+  const user = session?.user ?? null;
 
   const loginVariant = pathname === "/login" ? "default" : "ghost";
   const signupVariant = pathname === "/register" ? "default" : "ghost";
