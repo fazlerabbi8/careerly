@@ -18,3 +18,7 @@ export async function signIn(input: {
     const {error} = await authClient.signIn.email(input)
     return {error: error ? 'Invalid email or password.' : null}
 }
+
+export async function signOut(): Promise<void> {
+    await authClient.signOut()
+}

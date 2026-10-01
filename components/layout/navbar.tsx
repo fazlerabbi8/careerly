@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Briefcase, Menu } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { AwardIcon, Briefcase, Menu } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import Image from "next/image";
 import {
@@ -23,6 +23,7 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import { authClient } from "@/lib/auth-clients";
+import { signOut } from "@/lib/auth-api";
 
 const links = [
   { href: "/", label: "Home" },
@@ -33,11 +34,18 @@ const links = [
 
 export function Navbar() {
   const pathname = usePathname();
+  const router = useRouter()
   const { data: session, isPending } = authClient.useSession();
   const user = session?.user ?? null;
 
   const loginVariant = pathname === "/login" ? "default" : "ghost";
   const signupVariant = pathname === "/register" ? "default" : "ghost";
+
+  async function handleLogOut(){
+    await signOut();
+    router.push('/')
+    router.refresh()
+  }
 
   return (
     <header className="sticky top-0 z-50 w-full bg-gray-100 backdrop-blur">
@@ -93,7 +101,7 @@ export function Navbar() {
                 <DropdownMenuItem render={<Link href="/dashboard" />}>
                   Dashboard
                 </DropdownMenuItem>
-                <DropdownMenuItem>Log out</DropdownMenuItem>
+                <DropdownMenuItem onClick={handleLogOut}>Log out</DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
