@@ -9,7 +9,7 @@ type Role = 'CANDIDATE' | 'EMPLOYER' |  'ADMIN'
 
 // Reads the session from the cookie. used cache() for one lookup per request.
 export const getSession = cache(async()=>{
-    return auth.api.getSession({headers: await headers()})
+    return auth.api.getSession({ headers: await headers() })
 })
 
 // Must be logged in, otherwise redirect to /login.
@@ -22,5 +22,11 @@ export async function requireUser(){
 }
 
 // Must be logged in and have the right role, otherwise go home.
-ex
+export async function requireRole(role: Role){
+    const user = await requireUser();
+    if(user.role !== role){
+        redirect('/')
+    }
+    return user;
+}       
 
